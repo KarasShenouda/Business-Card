@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:gradient_glow_border/gradient_glow_border.dart';
 import 'package:parallax_rain/parallax_rain.dart';
-import 'ResultScreen.dart';
+import '../ResultScreen.dart';
 
 class Bmi extends StatefulWidget {
   const Bmi({super.key});

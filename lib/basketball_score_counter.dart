@@ -1,149 +1,155 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
+class Basketball extends StatefulWidget {
+  @override
+  _BasketballState createState() => _BasketballState();
 }
 
-class BasketballScoreCounter extends StatelessWidget {
+class _BasketballState extends State<Basketball> {
+  int teamAScore = 0;
+  int teamBScore = 0;
+  bool isDarkMode = true;
+
+  TextEditingController teamAController = TextEditingController(text: "Team A");
+  TextEditingController teamBController = TextEditingController(text: "Team B");
+
+  void addPoints(String team, int points) {
+    setState(() {
+      if (team == 'A') {
+        teamAScore += points;
+      } else {
+        teamBScore += points;
+      }
+    });
+  }
+
+  void resetScores() {
+    setState(() {
+      teamAScore = 0;
+      teamBScore = 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = isDarkMode ? Colors.black : Colors.white;
+    final textColor = isDarkMode ? Colors.white : Colors.black;
+    final dividerColor = isDarkMode ? Colors.white : Colors.black;
+    final buttonColor = isDarkMode ? Colors.white : Colors.black;
+    final buttonTextColor = isDarkMode ? Colors.black : Colors.white;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Basketball Score Counter',
-      theme: ThemeData(
-        brightness: Brightness.dark, // لتعيين الوضع الليلي
-        primarySwatch: Colors.orange,
-        scaffoldBackgroundColor: Colors.black, // تعيين خلفية سوداء
-        textTheme: TextTheme(
-          bodyText2: TextStyle(color: Colors.amber), // تعيين النص باللون الذهبي
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.amber, // تعيين لون الأزرار باللون الذهبي
-            onPrimary:
-                Colors.black, // تعيين لون النص داخل الأزرار باللون الأسود
-          ),
-        ),
-      ),
-      home: ScoreCounter(),
-    );
-  }
-}
-
-class ScoreCounter extends StatefulWidget {
-  @override
-  _ScoreCounterState createState() => _ScoreCounterState();
-}
-
-class _ScoreCounterState extends State<ScoreCounter> {
-  int _teamAScore = 0;
-  int _teamBScore = 0;
-
-  void _incrementTeamA(int points) {
-    setState(() {
-      _teamAScore += points;
-    });
-  }
-
-  void _incrementTeamB(int points) {
-    setState(() {
-      _teamBScore += points;
-    });
-  }
-
-  void _resetScores() {
-    setState(() {
-      _teamAScore = 0;
-      _teamBScore = 0;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Basketball Score Counter'),
-        backgroundColor: Colors.black, // تعيين خلفية شريط التطبيق باللون الأسود
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      'Team A',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '$_teamAScore',
-                      style: TextStyle(fontSize: 48),
-                    ),
-                    SizedBox(height: 16), // مسافة بين النص والأزرار
-                    ElevatedButton(
-                      onPressed: () => _incrementTeamA(1),
-                      child: Text('+1 Point'),
-                    ),
-                    SizedBox(height: 8), // مسافة بين الأزرار
-                    ElevatedButton(
-                      onPressed: () => _incrementTeamA(2),
-                      child: Text('+2 Points'),
-                    ),
-                    SizedBox(height: 8), // مسافة بين الأزرار
-                    ElevatedButton(
-                      onPressed: () => _incrementTeamA(3),
-                      child: Text('+3 Points'),
-                    ),
-                  ],
-                ),
-                // خط فاصل بين الفريقين
-                Container(
-                  height: 200,
-                  width: 1,
-                  color: Colors.amber,
-                ),
-                Column(
-                  children: [
-                    Text(
-                      'Team B',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '$_teamBScore',
-                      style: TextStyle(fontSize: 48),
-                    ),
-                    SizedBox(height: 16), // مسافة بين النص والأزرار
-                    ElevatedButton(
-                      onPressed: () => _incrementTeamB(1),
-                      child: Text('+1 Point'),
-                    ),
-                    SizedBox(height: 8), // مسافة بين الأزرار
-                    ElevatedButton(
-                      onPressed: () => _incrementTeamB(2),
-                      child: Text('+2 Points'),
-                    ),
-                    SizedBox(height: 8), // مسافة بين الأزرار
-                    ElevatedButton(
-                      onPressed: () => _incrementTeamB(3),
-                      child: Text('+3 Points'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: _resetScores,
-              child: Text('Reset Scores'),
+      home: Scaffold(
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          backgroundColor: isDarkMode ? Colors.grey[900] : Colors.grey[300],
+          title: Text('Basketball Score Counter',
+              style: TextStyle(color: textColor)),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: Icon(
+                isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                color: textColor,
+              ),
+              onPressed: () {
+                setState(() {
+                  isDarkMode = !isDarkMode;
+                });
+              },
             ),
           ],
         ),
+        body: Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  buildTeamColumn(teamAController, teamAScore, 'A', textColor,
+                      buttonColor, buttonTextColor),
+                  Container(width: 2, color: dividerColor),
+                  buildTeamColumn(teamBController, teamBScore, 'B', textColor,
+                      buttonColor, buttonTextColor),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: resetScores,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: buttonColor,
+                  foregroundColor: buttonTextColor,
+                ),
+                child: Text('Reset Scores'),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildTeamColumn(
+    TextEditingController nameController,
+    int score,
+    String team,
+    Color textColor,
+    Color buttonColor,
+    Color buttonTextColor,
+  ) {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: TextField(
+              controller: nameController,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24, color: textColor),
+              decoration: InputDecoration(
+                border: UnderlineInputBorder(),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: textColor),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: textColor),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+          Text('$score',
+              style: TextStyle(
+                  fontSize: 48, fontWeight: FontWeight.bold, color: textColor)),
+          SizedBox(height: 30),
+          buildPointButton(team, 1, buttonColor, buttonTextColor),
+          buildPointButton(team, 2, buttonColor, buttonTextColor),
+          buildPointButton(team, 3, buttonColor, buttonTextColor),
+        ],
+      ),
+    );
+  }
+
+  Widget buildPointButton(
+    String team,
+    int points,
+    Color buttonColor,
+    Color buttonTextColor,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: ElevatedButton(
+        onPressed: () => addPoints(team, points),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: buttonColor,
+          foregroundColor: buttonTextColor,
+          minimumSize: Size(120, 40),
+        ),
+        child: Text('Add $points Point${points > 1 ? 's' : ''}'),
       ),
     );
   }
